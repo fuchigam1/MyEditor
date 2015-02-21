@@ -17,6 +17,13 @@
 * インストール時は、システム設定＞サイト基本設定 で指定されているエディターが、ユーザー別のエディターとして設定されます。
 
 
+## Editor Introduction
+
+* CkEditor: baserCMS標準
+* BurgerEditor: http://burger.d-zero.com/
+* AceEditor: http://qiita.com/YusukeHirao/items/6e73bb828b9bdc6effa6
+
+ 
 ## Thanks
 
 - http://basercms.net
