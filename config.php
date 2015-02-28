@@ -11,4 +11,5 @@ $description = '記事編集時のエディターを、ユーザー別に設定�
 $author = 'arata';
 $url = 'http://www.materializing.net/';
 $adminLink = array('controller' => 'users', 'action' => 'index');
-$installMessage = 'ユーザー情報編集画面に、利用するエディターの指定欄が追加されます。';
+$installMessage = 'ログイン中のツールバーとユーザー情報編集画面に、利用するエディターの選択欄が追加されます。';
+$installMessage .= '<br />ツールバーにエディター切替えを表示する際は、インストール後、ログインし直してください。';
