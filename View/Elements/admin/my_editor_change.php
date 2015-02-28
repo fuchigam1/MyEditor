@@ -11,6 +11,7 @@ $user = BcUtil::loginUser();
 <?php if (!empty($user['MyEditor'])): ?>
 <?php $editorList = Configure::read('BcApp.editors') ?>
 <li id="MyEditorChoiceMenu"><?php $this->BcBaser->link('利用中：'. $this->BcText->arrayValue($user['MyEditor']['editor'], $editorList) . $this->BcBaser->getImg('admin/btn_dropdown.png', array('width' => 8, 'height' => 11, 'class' => 'bc-btn')), 'javascript:void(0)', array('class' => 'title')) ?>
+<?php unset($editorList[$user['MyEditor']['editor']]) ?>
 	<ul><?php foreach ($editorList as $key => $editor): ?>
 		<li><?php $this->BcBaser->link($editor, array(
 				'admin' => true, 'plugin' => 'my_editor', 'controller' => 'my_editors', 'action' => 'change', $key

@@ -70,4 +70,39 @@ class MyEditorControllerEventListener extends BcControllerEventListener {
 		}
 	}
 	
+/**
+ * pluginsBeforeRender
+ * インストール後、セッション情報を書換えてツールバーのエディター切替えを表示する
+ * ※未使用
+ * 　→ インストール直後のプラグイン一覧画面でフックはできるが、毎回書換えが発生するため安全性に確証が取れないため
+ * 
+ * @param CakeEvent $event
+ */
+	public function pluginsBeforeRender (CakeEvent $event) {
+		$Controller = $event->subject();
+		if (BcUtil::isAdminSystem()) {
+			if ($Controller->request->params['action'] == 'admin_index') {
+				$user = BcUtil::loginUser();
+				// saveしたあとの新しいユーザー情報（更新後のMyEditor情報）を取得する
+				App::uses('User', 'Model');
+				$UserModel = new User();
+				$newUserData = $UserModel->find('first', array(
+					'conditions' => array(
+						'User.id' => $user['id'],
+					),
+				));
+				if (isset($newUserData['MyEditor'])) {
+					// Session更新のためのデータ形式に変更する
+					$newData = $newUserData['User'];
+					unset($newUserData['User']);
+					$newUser = array_merge($newUserData, $newData);
+					// セッション情報を更新し、新しいユーザー情報（MyEditor情報）をセッションに書き込む
+					$Controller->Session->renew();
+					$Controller->Session->write(BcAuthComponent::$sessionKey, $newUser);
+					$Controller->BcAuth->setSessionAuthAddition();
+				}
+			}
+		}
+	}
+	
 }
