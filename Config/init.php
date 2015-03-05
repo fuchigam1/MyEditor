@@ -42,7 +42,7 @@ $this->Plugin->initDb('plugin', 'MyEditor');
  *   ・権限データがないグループのデータのみ作成する
  * 
  */
-	App::uses('Model', 'UserGroup');
+	App::uses('UserGroup', 'Model');
 	$UserGroupModel = new UserGroup();
 	$userGroupDataList = $UserGroupModel->find('all', array('recursive' => -1));
 	if ($userGroupDataList) {
