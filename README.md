@@ -2,6 +2,8 @@
 
 マイエディター プラグインは、ユーザー別に利用するエディターを設定できるbaserCMS専用のプラグインです。
 
+- [Summary: Wiki](https://github.com/materializing/MyEditor/wiki)
+
 
 ## Installation
 
@@ -17,7 +19,7 @@
 * ログイン中に、/admin/my_editor/my_editors/init のURLを叩くと、アクセス権限を持たないユーザーグループに、アクセス権限を付与できます。
 
 
-## Ponts
+## Points
 
 * 新規ユーザー追加時は、システム設定＞サイト基本設定 で指定されているエディターが基本値になります。
 * インストール時は、システム設定＞サイト基本設定 で指定されているエディターが、ユーザー別のエディターとして設定されます。
@@ -26,15 +28,22 @@
 * Version 1.0.0 よりバージョンアップした場合、ログインし直すことで、ツールバー内にエディター切替えが表示されます。
 
 
+## Bug reports, Discuss, Support
+
+- Join online chat at [![Join the chat at https://gitter.im/materializing/MyEditor](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/materializing/MyEditor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+- [Issue](https://github.com/materializing/MyEditor/issues)
+
+
 ## Editor Introduction
 
 * CkEditor: baserCMS標準
-* BurgerEditor: http://burger.d-zero.com/
-* AceEditor: http://qiita.com/YusukeHirao/items/6e73bb828b9bdc6effa6
+* BurgerEditor: [http://burger.d-zero.com/](http://burger.d-zero.com/)
+* AceEditor: [http://qiita.com/YusukeHirao/items/6e73bb828b9bdc6effa6](http://qiita.com/YusukeHirao/items/6e73bb828b9bdc6effa6)
+* MarkdownEditor: [https://github.com/YusukeHirao/MarkdownEditor](https://github.com/YusukeHirao/MarkdownEditor)
 
- 
+
 ## Thanks
 
-- http://basercms.net
-- http://wiki.basercms.net/
-- http://cakephp.jp
+- [http://basercms.net/](http://basercms.net/)
+- [http://wiki.basercms.net/](http://wiki.basercms.net/)
+- [http://cakephp.jp](http://cakephp.jp)
