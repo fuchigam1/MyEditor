@@ -1,5 +1,7 @@
 # マイエディター プラグイン
 
+[![Join the chat at https://gitter.im/materializing/MyEditor](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/materializing/MyEditor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 マイエディター プラグインは、ユーザー別に利用するエディターを設定できるbaserCMS専用のプラグインです。
 
 
