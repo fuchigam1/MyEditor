@@ -22,6 +22,13 @@ class MyEditor extends BcPluginAppModel {
 	public $plugin = 'MyEditor';
 	
 /**
+ * Behavior
+ * 
+ * @var array
+ */
+	public $actsAs = array('BcCache');
+	
+/**
  * belongsTo
  * 
  * @var array
