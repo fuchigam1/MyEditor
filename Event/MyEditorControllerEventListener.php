@@ -26,28 +26,30 @@ class MyEditorControllerEventListener extends BcControllerEventListener {
  * @param CakeEvent $event
  */
 	public function initialize (CakeEvent $event) {
+		if (!BcUtil::isAdminSystem()) {
+			return;
+		}
+		
 		$Controller = $event->subject();
-		if (BcUtil::isAdminSystem()) {
-			$user = BcUtil::loginUser();
-			if (isset($user['MyEditor'])) {
-				$Controller->siteConfigs['editor'] = $user['MyEditor']['editor'];
-				$Controller->siteConfigs['editor_enter_br'] = $user['MyEditor']['editor_enter_br'];
+		$user = BcUtil::loginUser();
+		if (isset($user['MyEditor'])) {
+			$Controller->siteConfigs['editor'] = $user['MyEditor']['editor'];
+			$Controller->siteConfigs['editor_enter_br'] = $user['MyEditor']['editor_enter_br'];
+		} else {
+			if (ClassRegistry::isKeySet('MyEditor.MyEditor')) {
+				$MyEditorModel = ClassRegistry::getObject('MyEditor.MyEditor');
 			} else {
-				if (ClassRegistry::isKeySet('MyEditor.MyEditor')) {
-					$MyEditorModel = ClassRegistry::getObject('MyEditor.MyEditor');
-				} else {
-					$MyEditorModel = ClassRegistry::init('MyEditor.MyEditor');
-				}
-				$data = $MyEditorModel->find('first', array(
-					'conditions' => array(
-						'MyEditor.user_id' => $user['id'],
-					),
-					'recursive' => -1,
-				));
-				if ($data) {
-					$Controller->siteConfigs['editor'] = $data['MyEditor']['editor'];
-					$Controller->siteConfigs['editor_enter_br'] = $data['MyEditor']['editor_enter_br'];
-				}
+				$MyEditorModel = ClassRegistry::init('MyEditor.MyEditor');
+			}
+			$data = $MyEditorModel->find('first', array(
+				'conditions' => array(
+					'MyEditor.user_id' => $user['id'],
+				),
+				'recursive' => -1,
+			));
+			if ($data) {
+				$Controller->siteConfigs['editor'] = $data['MyEditor']['editor'];
+				$Controller->siteConfigs['editor_enter_br'] = $data['MyEditor']['editor_enter_br'];
 			}
 		}
 	}
@@ -59,14 +61,16 @@ class MyEditorControllerEventListener extends BcControllerEventListener {
  * @param CakeEvent $event
  */
 	public function usersBeforeRender (CakeEvent $event) {
+		if (!BcUtil::isAdminSystem()) {
+			return;
+		}
+		
 		$Controller = $event->subject();
-		if (BcUtil::isAdminSystem()) {
-			if ($Controller->request->params['action'] == 'admin_add') {
-				$Controller->request->data['MyEditor'] = array(
-					'editor' => $Controller->siteConfigs['editor'],
-					'editor_enter_br' => $Controller->siteConfigs['editor_enter_br'],
-				);
-			}
+		if ($Controller->request->params['action'] == 'admin_add') {
+			$Controller->request->data['MyEditor'] = array(
+				'editor' => $Controller->siteConfigs['editor'],
+				'editor_enter_br' => $Controller->siteConfigs['editor_enter_br'],
+			);
 		}
 	}
 	
@@ -79,28 +83,30 @@ class MyEditorControllerEventListener extends BcControllerEventListener {
  * @param CakeEvent $event
  */
 	public function pluginsBeforeRender (CakeEvent $event) {
+		if (!BcUtil::isAdminSystem()) {
+			return;
+		}
+		
 		$Controller = $event->subject();
-		if (BcUtil::isAdminSystem()) {
-			if ($Controller->request->params['action'] == 'admin_index') {
-				$user = BcUtil::loginUser();
-				// saveしたあとの新しいユーザー情報（更新後のMyEditor情報）を取得する
-				App::uses('User', 'Model');
-				$UserModel = new User();
-				$newUserData = $UserModel->find('first', array(
-					'conditions' => array(
-						'User.id' => $user['id'],
-					),
-				));
-				if (isset($newUserData['MyEditor'])) {
-					// Session更新のためのデータ形式に変更する
-					$newData = $newUserData['User'];
-					unset($newUserData['User']);
-					$newUser = array_merge($newUserData, $newData);
-					// セッション情報を更新し、新しいユーザー情報（MyEditor情報）をセッションに書き込む
-					$Controller->Session->renew();
-					$Controller->Session->write(BcAuthComponent::$sessionKey, $newUser);
-					$Controller->BcAuth->setSessionAuthAddition();
-				}
+		if ($Controller->request->params['action'] == 'admin_index') {
+			$user = BcUtil::loginUser();
+			// saveしたあとの新しいユーザー情報（更新後のMyEditor情報）を取得する
+			App::uses('User', 'Model');
+			$UserModel = new User();
+			$newUserData = $UserModel->find('first', array(
+				'conditions' => array(
+					'User.id' => $user['id'],
+				),
+			));
+			if (isset($newUserData['MyEditor'])) {
+				// Session更新のためのデータ形式に変更する
+				$newData = $newUserData['User'];
+				unset($newUserData['User']);
+				$newUser = array_merge($newUserData, $newData);
+				// セッション情報を更新し、新しいユーザー情報（MyEditor情報）をセッションに書き込む
+				$Controller->Session->renew();
+				$Controller->Session->write(BcAuthComponent::$sessionKey, $newUser);
+				$Controller->BcAuth->setSessionAuthAddition();
 			}
 		}
 	}

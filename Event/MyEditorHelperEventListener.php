@@ -13,26 +13,48 @@ class MyEditorHelperEventListener extends BcHelperEventListener {
  * @var array
  */
 	public $events = array(
-		'Form.afterEnd',
+		'Form.afterForm',
 	);
 	
 /**
- * formAfterEnd
+ * 処理対象アクション
+ * 
+ * @var array
+ */
+	public $targetAction = array(
+		'admin_edit',
+		'admin_add',
+	);
+	
+/**
+ * 処理対象フォームID
+ * 
+ * @var array
+ */
+	public $targetFormId = array(
+		'UserAdminEditForm',
+		'UserAdminAddForm',
+	);
+	
+/**
+ * formAfterForm
  * ユーザー編集・登録画面にエディター指定欄を追加する
  * 
  * @param CakeEvent $event
- * @return string
  */
-	public function formAfterEnd (CakeEvent $event) {
+	public function formAfterForm (CakeEvent $event) {
+		if (!BcUtil::isAdminSystem()) {
+			return;
+		}
+		
 		$View = $event->subject();
-		if (BcUtil::isAdminSystem()) {
-			if ($View->request->params['controller'] == 'users') {
-				if ($View->request->params['action'] == 'admin_edit' || $View->request->params['action'] == 'admin_add') {
-					if ($event->data['id'] == 'UserAdminEditForm' || $event->data['id'] == 'UserAdminAddForm') {
-						$event->data['out'] .= $View->element('MyEditor.admin/my_editor_form');
-						return $event->data['out'];
-					}
-				}
+		if ($View->request->params['controller'] != 'users') {
+			return;
+		}
+		
+		if (in_array($View->request->params['action'], $this->targetAction)) {
+			if (in_array($event->data['id'], $this->targetFormId)) {
+				echo $View->element('MyEditor.admin/my_editor_form');
 			}
 		}
 	}

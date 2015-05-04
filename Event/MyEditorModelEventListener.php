@@ -43,22 +43,9 @@ class MyEditorModelEventListener extends BcModelEventListener {
  */
 	public function userAfterSave (CakeEvent $event) {
 		$Model = $event->subject();
-		$created = $event->data[0];
-		$saveData = array();
-		
-		if ($created) {
-			$saveData['MyEditor'] = $Model->data['MyEditor'];
-			$saveData['MyEditor']['user_id'] = $Model->getLastInsertId();
-		} else {
-			$saveData['MyEditor'] = $Model->data['MyEditor'];
-		}
-		
-		if (isset($saveData['MyEditor']['id'])) {
-			$Model->MyEditor->set($saveData);
-		} else {
-			$Model->MyEditor->create($saveData);
-		}
-		if (!$Model->MyEditor->save()) {
+		$saveData['MyEditor'] = $Model->data['MyEditor'];
+		$saveData['MyEditor']['user_id'] = $Model->id;
+		if (!$Model->MyEditor->save($saveData)) {
 			$this->log(sprintf('ID：%s のMyEditorの保存に失敗しました。', $Model->data['MyEditor']['id']));
 		}
 	}
