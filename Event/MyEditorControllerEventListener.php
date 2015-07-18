@@ -64,6 +64,17 @@ class MyEditorControllerEventListener extends BcControllerEventListener {
 		}
 		
 		$Controller = $event->subject();
+		
+		if ($Controller->request->params['action'] == 'admin_edit') {
+			if (isset($Controller->request->data['MyEditor']) && empty($Controller->request->data['MyEditor'])) {
+				$Controller->request->data['MyEditor'] = array(
+					'editor' => $Controller->siteConfigs['editor'],
+					'editor_enter_br' => $Controller->siteConfigs['editor_enter_br'],
+				);
+			}
+			return;
+		}
+		
 		if ($Controller->request->params['action'] == 'admin_add') {
 			$Controller->request->data['MyEditor'] = array(
 				'editor' => $Controller->siteConfigs['editor'],
