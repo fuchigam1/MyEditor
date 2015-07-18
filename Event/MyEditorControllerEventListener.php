@@ -97,26 +97,27 @@ class MyEditorControllerEventListener extends BcControllerEventListener {
 		}
 		
 		$Controller = $event->subject();
-		if ($Controller->request->params['action'] == 'admin_index') {
-			$user = BcUtil::loginUser();
-			// saveしたあとの新しいユーザー情報（更新後のMyEditor情報）を取得する
-			App::uses('User', 'Model');
-			$UserModel = new User();
-			$newUserData = $UserModel->find('first', array(
-				'conditions' => array(
-					'User.id' => $user['id'],
-				),
-			));
-			if (isset($newUserData['MyEditor'])) {
-				// Session更新のためのデータ形式に変更する
-				$newData = $newUserData['User'];
-				unset($newUserData['User']);
-				$newUser = array_merge($newUserData, $newData);
-				// セッション情報を更新し、新しいユーザー情報（MyEditor情報）をセッションに書き込む
-				$Controller->Session->renew();
-				$Controller->Session->write(BcAuthComponent::$sessionKey, $newUser);
-				$Controller->BcAuth->setSessionAuthAddition();
-			}
+		if ($Controller->request->params['action'] != 'admin_index') {
+			return;
+		}
+		
+		$user = BcUtil::loginUser();
+		// saveしたあとの新しいユーザー情報（更新後のMyEditor情報）を取得する
+		App::uses('User', 'Model');
+		$UserModel = new User();
+		$newUserData = $UserModel->find('first', array(
+			'conditions' => array(
+				'User.id' => $user['id'],
+			),
+		));
+		if (isset($newUserData['MyEditor'])) {
+			// Session更新のためのデータ形式に変更する
+			$newData = $newUserData['User'];
+			unset($newUserData['User']);
+			$newUser = array_merge($newUserData, $newData);
+			// セッション情報を更新し、新しいユーザー情報（MyEditor情報）をセッションに書き込む
+			$Controller->Session->renew();
+			$Controller->Session->write(BcAuthComponent::$sessionKey, $newUser);
 		}
 	}
 	
