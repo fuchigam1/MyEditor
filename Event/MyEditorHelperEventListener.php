@@ -17,24 +17,25 @@ class MyEditorHelperEventListener extends BcHelperEventListener {
 	);
 	
 /**
+ * 処理対象とするコントローラー
+ * 
+ * @var array
+ */
+	private $targetControllers = array('users');
+	
+/**
  * 処理対象アクション
  * 
  * @var array
  */
-	public $targetAction = array(
-		'admin_edit',
-		'admin_add',
-	);
+	private $targetAction = array('admin_edit', 'admin_add');
 	
 /**
  * 処理対象フォームID
  * 
  * @var array
  */
-	public $targetFormId = array(
-		'UserAdminEditForm',
-		'UserAdminAddForm',
-	);
+	private $targetFormId = array('UserAdminEditForm', 'UserAdminAddForm');
 	
 /**
  * formAfterForm
@@ -48,14 +49,16 @@ class MyEditorHelperEventListener extends BcHelperEventListener {
 		}
 		
 		$View = $event->subject();
-		if ($View->request->params['controller'] != 'users') {
+		if (!in_array($View->request->params['controller'], $this->targetControllers)) {
 			return;
 		}
 		
-		if (in_array($View->request->params['action'], $this->targetAction)) {
-			if (in_array($event->data['id'], $this->targetFormId)) {
-				echo $View->element('MyEditor.admin/my_editor_form');
-			}
+		if (!in_array($View->request->params['action'], $this->targetAction)) {
+			return;
+		}
+		
+		if (in_array($event->data['id'], $this->targetFormId)) {
+			echo $View->element('MyEditor.admin/my_editor_form');
 		}
 	}
 	
