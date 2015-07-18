@@ -32,25 +32,23 @@ class MyEditorControllerEventListener extends BcControllerEventListener {
 		
 		$Controller = $event->subject();
 		$user = BcUtil::loginUser();
-		if (isset($user['MyEditor'])) {
-			$Controller->siteConfigs['editor'] = $user['MyEditor']['editor'];
-			$Controller->siteConfigs['editor_enter_br'] = $user['MyEditor']['editor_enter_br'];
+		
+		if (!isset($user['MyEditor']) || empty($user['MyEditor'])) {
+			return;
+		}
+		
+		if (ClassRegistry::isKeySet('MyEditor.MyEditor')) {
+			$MyEditorModel = ClassRegistry::getObject('MyEditor.MyEditor');
 		} else {
-			if (ClassRegistry::isKeySet('MyEditor.MyEditor')) {
-				$MyEditorModel = ClassRegistry::getObject('MyEditor.MyEditor');
-			} else {
-				$MyEditorModel = ClassRegistry::init('MyEditor.MyEditor');
-			}
-			$data = $MyEditorModel->find('first', array(
-				'conditions' => array(
-					'MyEditor.user_id' => $user['id'],
-				),
-				'recursive' => -1,
-			));
-			if ($data) {
-				$Controller->siteConfigs['editor'] = $data['MyEditor']['editor'];
-				$Controller->siteConfigs['editor_enter_br'] = $data['MyEditor']['editor_enter_br'];
-			}
+			$MyEditorModel = ClassRegistry::init('MyEditor.MyEditor');
+		}
+		$data = $MyEditorModel->find('first', array(
+			'conditions' => array('MyEditor.user_id' => $user['id']),
+			'recursive' => -1,
+		));
+		if ($data) {
+			$Controller->siteConfigs['editor'] = $data['MyEditor']['editor'];
+			$Controller->siteConfigs['editor_enter_br'] = $data['MyEditor']['editor_enter_br'];
 		}
 	}
 	
