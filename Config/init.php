@@ -9,11 +9,11 @@ $this->Plugin->initDb('plugin', 'MyEditor');
  *   ・設定データがないユーザー用のデータのみ作成する
  * 
  */
+	clearAllCache();
 	App::uses('User', 'Model');
 	$UserModel = new User();
 	$userDatas = $UserModel->find('list', array('recursive' => -1));
 	if ($userDatas) {
-		
 		if (ClassRegistry::isKeySet('SiteConfig')) {
 			$SiteConfig = ClassRegistry::getObject('SiteConfig');
 		} else {
@@ -25,14 +25,13 @@ $this->Plugin->initDb('plugin', 'MyEditor');
 		App::uses('MyEditor', 'MyEditor.Model');
 		$MyEditorModel = new MyEditor();
 		foreach ($userDatas as $key => $user) {
-			$myEditorData = $MyEditorModel->findByUserId($key);
+			$hasData = $MyEditorModel->findByUserId($key);
 			$savaData = array();
-			if (!$myEditorData) {
+			if (!$hasData) {
 				$savaData['MyEditor']['user_id'] = $key;
 				$savaData['MyEditor']['editor'] = $siteConfig['editor'];
 				$savaData['MyEditor']['editor_enter_br'] = $siteConfig['editor_enter_br'];
-				$MyEditorModel->create($savaData);
-				$MyEditorModel->save($savaData, false);
+				$MyEditorModel->save($savaData, array('callbacks' => false, 'validate' => false));
 			}
 		}
 	}
@@ -42,11 +41,12 @@ $this->Plugin->initDb('plugin', 'MyEditor');
  *   ・権限データがないグループのデータのみ作成する
  * 
  */
+	clearAllCache();
 	App::uses('UserGroup', 'Model');
 	$UserGroupModel = new UserGroup();
 	$userGroupDataList = $UserGroupModel->find('all', array('recursive' => -1));
 	if ($userGroupDataList) {
-		App::uses('Model', 'Permission');
+		App::uses('Permission', 'Model');
 		$PermissionModel = new Permission();
 		foreach ($userGroupDataList as $key => $userGroupData) {
 			$id = $userGroupData['UserGroup']['id'];
@@ -60,14 +60,15 @@ $this->Plugin->initDb('plugin', 'MyEditor');
 				'Permission.user_group_id' => $id
 			)));
 			// MyEditor用権限の存在をチェックする
-			$judgeExists = false;
+			$hasPermission = false;
 			foreach ($permissions as $perm) {
 				if ($perm['Permission']['url'] == '/'. $permissionAuthPrefix . '/my_editor/*') {
-					$judgeExists = true;
+					$hasPermission = true;
+					break;
 				}
 			}
 			$saveData = array();
-			if (!$judgeExists) {
+			if (!$hasPermission) {
 				//「MyEditor権限」を追加する
 				$saveData['Permission']['url'] = '/'. $permissionAuthPrefix . '/my_editor/*';
 				$saveData['Permission']['name'] = 'マイエディター権限';
@@ -76,8 +77,7 @@ $this->Plugin->initDb('plugin', 'MyEditor');
 				$saveData['Permission']['status'] = true;
 				$saveData['Permission']['no'] = $PermissionModel->getMax('no', array('user_group_id' => $id)) + 1;
 				$saveData['Permission']['sort'] = $PermissionModel->getMax('sort', array('user_group_id' => $id)) + 1;
-				$PermissionModel->create($saveData);
-				$PermissionModel->save($saveData, false);
+				$PermissionModel->save($saveData, array('callbacks' => false, 'validate' => false));
 			}
 		}
 	}
