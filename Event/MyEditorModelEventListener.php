@@ -43,6 +43,11 @@ class MyEditorModelEventListener extends BcModelEventListener {
  */
 	public function userAfterSave (CakeEvent $event) {
 		$Model = $event->subject();
+		
+		if (!isset($Model->data['MyEditor']) || empty($Model->data['MyEditor'])) {
+			return;
+		}
+		
 		$saveData['MyEditor'] = $Model->data['MyEditor'];
 		$saveData['MyEditor']['user_id'] = $Model->id;
 		if (!$Model->MyEditor->save($saveData)) {
