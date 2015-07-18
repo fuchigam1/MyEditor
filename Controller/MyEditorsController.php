@@ -72,7 +72,6 @@ class MyEditorsController extends BcPluginAppController {
 			// セッション情報を更新し、新しいユーザー情報（MyEditor情報）をセッションに書き込む
 			$this->Session->renew();
 			$this->Session->write(BcAuthComponent::$sessionKey, $newUser);
-			$this->BcAuth->setSessionAuthAddition();
 			
 			// ログアウトしてしまうため以下は利用しない
 			//$this->Session->write('Auth', $newUserData);
