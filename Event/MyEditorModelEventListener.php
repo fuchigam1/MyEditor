@@ -19,6 +19,13 @@ class MyEditorModelEventListener extends BcModelEventListener {
 	);
 	
 /**
+ * プラグインのモデル名
+ * 
+ * @var string
+ */
+	private $pluginModelName = 'MyEditor';
+	
+/**
  * userBeforeFind
  * ユーザー情報取得の際に、MyEditor 情報も併せて取得する
  * 
@@ -27,8 +34,8 @@ class MyEditorModelEventListener extends BcModelEventListener {
 	public function userBeforeFind (CakeEvent $event) {
 		$Model = $event->subject();
 		$association = array(
-			'MyEditor' => array(
-				'className' => 'MyEditor.MyEditor',
+			$this->plugin => array(
+				'className' => $this->plugin .'.'. $this->pluginModelName,
 				'foreignKey' => 'user_id'
 			)
 		);
@@ -44,14 +51,14 @@ class MyEditorModelEventListener extends BcModelEventListener {
 	public function userAfterSave (CakeEvent $event) {
 		$Model = $event->subject();
 		
-		if (!isset($Model->data['MyEditor']) || empty($Model->data['MyEditor'])) {
+		if (!isset($Model->data[$this->pluginModelName]) || empty($Model->data[$this->pluginModelName])) {
 			return;
 		}
 		
-		$saveData['MyEditor'] = $Model->data['MyEditor'];
-		$saveData['MyEditor']['user_id'] = $Model->id;
+		$saveData[$this->pluginModelName] = $Model->data[$this->pluginModelName];
+		$saveData[$this->pluginModelName]['user_id'] = $Model->id;
 		if (!$Model->MyEditor->save($saveData)) {
-			$this->log(sprintf('ID：%s のMyEditorの保存に失敗しました。', $Model->data['MyEditor']['id']));
+			$this->log(sprintf('ID：%s の'. $this->pluginModelName .'の保存に失敗しました。', $Model->data[$this->pluginModelName]['id']));
 		}
 	}
 	
@@ -64,12 +71,12 @@ class MyEditorModelEventListener extends BcModelEventListener {
 	public function userAfterDelete (CakeEvent $event) {
 		$Model = $event->subject();
 		$data = $Model->MyEditor->find('first', array(
-			'conditions' => array('MyEditor.user_id' => $Model->id),
+			'conditions' => array($this->pluginModelName .'.user_id' => $Model->id),
 			'recursive' => -1
 		));
 		if ($data) {
-			if (!$Model->MyEditor->delete($data['MyEditor']['id'])) {
-				$this->log('ID:' . $data['MyEditor']['id'] . 'のMyEditorの削除に失敗しました。');
+			if (!$Model->MyEditor->delete($data[$this->pluginModelName]['id'])) {
+				$this->log('ID:' . $data[$this->pluginModelName]['id'] . 'のMyEditorの削除に失敗しました。');
 			}
 		}
 	}

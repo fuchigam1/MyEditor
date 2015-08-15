@@ -58,7 +58,7 @@ class MyEditorHelperEventListener extends BcHelperEventListener {
 		}
 		
 		if (in_array($event->data['id'], $this->targetFormId)) {
-			echo $View->element('MyEditor.admin/my_editor_form');
+			echo $View->element($this->plugin .'.admin/my_editor_form');
 		}
 	}
 	

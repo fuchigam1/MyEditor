@@ -18,6 +18,20 @@ class MyEditorControllerEventListener extends BcControllerEventListener {
 	);
 	
 /**
+ * プラグインのモデル名
+ * 
+ * @var string
+ */
+	private $pluginModelName = 'MyEditor';
+	
+/**
+ * 処理対象とするアクション
+ * 
+ * @var array
+ */
+	private $targetAction = array('admin_edit', 'admin_add');
+	
+/**
  * initialize
  * SiteConfigデータのエディタ設定を、ユーザー別の MyEditor 情報に書換える
  * ログアウトするまでユーザー別エディタは反映されない。そのため、MyEditor データを取得してない場合は強制的に取得する
@@ -33,22 +47,22 @@ class MyEditorControllerEventListener extends BcControllerEventListener {
 		$Controller = $event->subject();
 		$user = BcUtil::loginUser();
 		
-		if (!isset($user['MyEditor']) || empty($user['MyEditor'])) {
+		if (!isset($user[$this->pluginModelName]) || empty($user[$this->pluginModelName])) {
 			return;
 		}
 		
-		if (ClassRegistry::isKeySet('MyEditor.MyEditor')) {
-			$MyEditorModel = ClassRegistry::getObject('MyEditor.MyEditor');
+		if (ClassRegistry::isKeySet($this->plugin .'.'. $this->pluginModelName)) {
+			$MyEditorModel = ClassRegistry::getObject($this->plugin .'.'. $this->pluginModelName);
 		} else {
-			$MyEditorModel = ClassRegistry::init('MyEditor.MyEditor');
+			$MyEditorModel = ClassRegistry::init($this->plugin .'.'. $this->pluginModelName);
 		}
 		$data = $MyEditorModel->find('first', array(
-			'conditions' => array('MyEditor.user_id' => $user['id']),
+			'conditions' => array($this->pluginModelName .'.user_id' => $user['id']),
 			'recursive' => -1,
 		));
 		if ($data) {
-			$Controller->siteConfigs['editor'] = $data['MyEditor']['editor'];
-			$Controller->siteConfigs['editor_enter_br'] = $data['MyEditor']['editor_enter_br'];
+			$Controller->siteConfigs['editor'] = $data[$this->pluginModelName]['editor'];
+			$Controller->siteConfigs['editor_enter_br'] = $data[$this->pluginModelName]['editor_enter_br'];
 		}
 	}
 	
@@ -64,19 +78,20 @@ class MyEditorControllerEventListener extends BcControllerEventListener {
 		}
 		
 		$Controller = $event->subject();
-		
-		if ($Controller->request->params['action'] == 'admin_edit') {
-			if (isset($Controller->request->data['MyEditor']) && empty($Controller->request->data['MyEditor'])) {
-				$Controller->request->data['MyEditor'] = array(
-					'editor' => $Controller->siteConfigs['editor'],
-					'editor_enter_br' => $Controller->siteConfigs['editor_enter_br'],
-				);
-			}
+		if (!in_array($Controller->request->params['action'], $this->targetAction)) {
 			return;
 		}
 		
 		if ($Controller->request->params['action'] == 'admin_add') {
-			$Controller->request->data['MyEditor'] = array(
+			$Controller->request->data[$this->pluginModelName] = array(
+				'editor' => $Controller->siteConfigs['editor'],
+				'editor_enter_br' => $Controller->siteConfigs['editor_enter_br'],
+			);
+			return;
+		}
+		
+		if (isset($Controller->request->data[$this->pluginModelName]) && empty($Controller->request->data[$this->pluginModelName])) {
+			$Controller->request->data[$this->pluginModelName] = array(
 				'editor' => $Controller->siteConfigs['editor'],
 				'editor_enter_br' => $Controller->siteConfigs['editor_enter_br'],
 			);
@@ -110,7 +125,7 @@ class MyEditorControllerEventListener extends BcControllerEventListener {
 				'User.id' => $user['id'],
 			),
 		));
-		if (isset($newUserData['MyEditor'])) {
+		if (isset($newUserData[$this->pluginModelName])) {
 			// Session更新のためのデータ形式に変更する
 			$newData = $newUserData['User'];
 			unset($newUserData['User']);
