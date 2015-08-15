@@ -38,7 +38,6 @@ class MyEditorsController extends BcPluginAppController {
 /**
  * [ADMIN] ツールバーのエディター選択欄から、利用エディター切替えを行う
  * 
- * @return void
  */
 	public function admin_change($editor = '') {
 		$this->pageTitle = $this->adminTitle . '切替え';
@@ -86,7 +85,6 @@ class MyEditorsController extends BcPluginAppController {
  * [ADMIN] ユーザーグループにマイエディター権限を付与する
  * - システム管理グループ以外のユーザーも、ツールバーからのエディター切替えができるようになる
  * 
- * @return void
  */
 	public function admin_init() {
 		App::uses('Model', 'UserGroup');
