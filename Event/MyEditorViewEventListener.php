@@ -25,7 +25,7 @@ class MyEditorViewEventListener extends BcViewEventListener {
 	public function afterElement(CakeEvent $event) {
 		$View = $event->subject();
 		if (preg_match('/^toolbar$/', $event->data['name'])) {
-			$element = $View->element('MyEditor.admin/my_editor_change');
+			$element = $View->element($this->plugin .'.admin/my_editor_change');
 			$element ='<div id="UserMenu"><ul class="clearfix">'. $element .'<li>';
 			
 			$regex = '/<div id="UserMenu">(.+?)<li>/s';
