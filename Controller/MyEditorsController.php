@@ -6,7 +6,7 @@
  * @author			arata
  * @license			MIT
  */
-class MyEditorsController extends BcPluginAppController {
+class MyEditorsController extends AppController {
 /**
  * ControllerName
  * 
@@ -122,7 +122,7 @@ class MyEditorsController extends BcPluginAppController {
 					$saveData['Permission']['no'] = $PermissionModel->getMax('no', array('user_group_id' => $id)) + 1;
 					$saveData['Permission']['sort'] = $PermissionModel->getMax('sort', array('user_group_id' => $id)) + 1;
 					$PermissionModel->create($saveData);
-					$PermissionModel->save($saveData, false);
+					$PermissionModel->save(null, array('callbacks' => false, 'validate' => false));
 				}
 			}
 		}

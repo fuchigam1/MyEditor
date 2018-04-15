@@ -6,7 +6,7 @@
  * @author			arata
  * @license			MIT
  */
-class MyEditor extends BcPluginAppModel {
+class MyEditor extends AppModel {
 /**
  * ModelName
  * 
@@ -20,14 +20,7 @@ class MyEditor extends BcPluginAppModel {
  * @var string
  */
 	public $plugin = 'MyEditor';
-	
-/**
- * Behavior
- * 
- * @var array
- */
-	public $actsAs = array('BcCache');
-	
+
 /**
  * belongsTo
  * 

@@ -3,7 +3,7 @@
  * MyEditor プラグイン用
  * データベース初期化
  */
-$this->Plugin->initDb('plugin', 'MyEditor');
+$this->Plugin->initDb('MyEditor');
 /**
  * ユーザー情報を元にデータを作成する
  *   ・設定データがないユーザー用のデータのみ作成する
@@ -14,11 +14,7 @@ $this->Plugin->initDb('plugin', 'MyEditor');
 	$UserModel = new User();
 	$userDatas = $UserModel->find('list', array('recursive' => -1));
 	if ($userDatas) {
-		if (ClassRegistry::isKeySet('SiteConfig')) {
-			$SiteConfig = ClassRegistry::getObject('SiteConfig');
-		} else {
-			$SiteConfig = ClassRegistry::init('SiteConfig');
-		}
+		$SiteConfig = ClassRegistry::init('SiteConfig');
 		$siteConfig = $SiteConfig->findExpanded();
 		
 		CakePlugin::load('MyEditor');
@@ -31,7 +27,8 @@ $this->Plugin->initDb('plugin', 'MyEditor');
 				$savaData['MyEditor']['user_id'] = $key;
 				$savaData['MyEditor']['editor'] = $siteConfig['editor'];
 				$savaData['MyEditor']['editor_enter_br'] = $siteConfig['editor_enter_br'];
-				$MyEditorModel->save($savaData, array('callbacks' => false, 'validate' => false));
+				$MyEditorModel->create($savaData);
+				$MyEditorModel->save(null, array('callbacks' => false, 'validate' => false));
 			}
 		}
 	}
@@ -77,7 +74,8 @@ $this->Plugin->initDb('plugin', 'MyEditor');
 				$saveData['Permission']['status'] = true;
 				$saveData['Permission']['no'] = $PermissionModel->getMax('no', array('user_group_id' => $id)) + 1;
 				$saveData['Permission']['sort'] = $PermissionModel->getMax('sort', array('user_group_id' => $id)) + 1;
-				$PermissionModel->save($saveData, array('callbacks' => false, 'validate' => false));
+				$PermissionModel->create($savaData);
+				$PermissionModel->save(null, array('callbacks' => false, 'validate' => false));
 			}
 		}
 	}

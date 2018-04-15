@@ -30,6 +30,10 @@ class MyEditorViewEventListener extends BcViewEventListener {
 			
 			$regex = '/<div id="UserMenu">(.+?)<li>/s';
 			$output = preg_replace($regex, $element, $event->data['out']);
+
+			// 左上側の例
+			//$regex = '/(<div id="ToolMenu">.+?)(<\/ul>)/s';
+			//$output = preg_replace($regex, '$1<li class="tool-menu"><span id="ToolMyEditor">現在のエディタ</span></li>$2', $output);
 			return $output;
 		}
 	}
